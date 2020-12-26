@@ -5,6 +5,7 @@ import os
 from traceback import print_exc
 from flask_cors import CORS
 import spotify
+import secrets
 
 app = Flask(__name__)
 CORS(app)
@@ -18,6 +19,7 @@ def home():
 @app.route('/playlist/')
 def playlist():
     query = request.args.get('query')
+    secrets.BEARER_TOKEN = request.args.get('bearer')
     if query:
         id = jiosaavn.get_playlist_id(query)
         playlist_name = jiosaavn.get_playlist(id)['listname']
