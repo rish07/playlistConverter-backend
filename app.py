@@ -4,14 +4,15 @@ import jiosaavn
 import os
 from traceback import print_exc
 from flask_cors import CORS
+import spotify
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET",'thankyoutonystark#weloveyou3000')
 CORS(app)
 
 
 @app.route('/')
 def home():
+    print(app.secret_key)
     return jsonify({"status":"The API is healthy"})
 
 @app.route('/playlist/')
@@ -19,11 +20,19 @@ def playlist():
     query = request.args.get('query')
     if query:
         id = jiosaavn.get_playlist_id(query)
+        playlist_name = jiosaavn.get_playlist(id)['listname']
         songs = jiosaavn.get_playlist(id)['songs']
         song_names = []
         for song in songs:
             song_names.append(song['song'])
-        return jsonify({"song_names":song_names})
+
+        uris = spotify.get_song_uris(song_names)
+        playlist_id,playlist_url = spotify.create_playlist(playlist_name)
+        success = spotify.append_playlist(uris,playlist_id)
+        if success:
+            return jsonify({"Spotify URL":playlist_url})
+        else:
+            return jsonify({'status':"Error"})
     else:
         error = {
             "status": False,
