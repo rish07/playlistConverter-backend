@@ -3,6 +3,14 @@ import endpoints
 import json
 import secrets
 
+
+def get_spotify_user():
+    response = requests.get(endpoints.spotify_user_details,headers={'Authorization': secrets.BEARER_TOKEN})
+    if response.status_code==200:
+        return response.json()['id']
+    else:
+        return False
+
 def get_song_uris(song_list):
     song_uris = []
 
@@ -27,9 +35,9 @@ def append_playlist(song_uris,playlist_id):
     else:
         return False
         
-def create_playlist(playlist_name):
+def create_playlist(playlist_name,user_id):
     print('working')
-    response = requests.post(endpoints.spotify_create_playlist,headers={'Authorization': secrets.BEARER_TOKEN},json={
+    response = requests.post(endpoints.spotify_create_playlist+str(user_id)+"/playlists",headers={'Authorization': secrets.BEARER_TOKEN},json={
             "name":playlist_name
         })
     if response.status_code==201:

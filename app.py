@@ -13,13 +13,21 @@ CORS(app)
 
 @app.route('/')
 def home():
-    print(app.secret_key)
     return jsonify({"status":"The API is healthy"})
+
+@app.route('/test')
+def test():
+    spotify_id=spotify.get_spotify_user()
+    if spotify_id:
+        return spotify_id
+    else:
+        return {"status":spotify_id}
 
 @app.route('/playlist/')
 def playlist():
     query = request.args.get('query')
-    secrets.BEARER_TOKEN = request.args.get('bearer')
+    if(request.args.get('bearer')):
+        secrets.BEARER_TOKEN = request.args.get('bearer')
     if query:
         id = jiosaavn.get_playlist_id(query)
         playlist_name = jiosaavn.get_playlist(id)['listname']
@@ -27,9 +35,9 @@ def playlist():
         song_names = []
         for song in songs:
             song_names.append(song['song'])
-
+        spotify_id=spotify.get_spotify_user()
         uris = spotify.get_song_uris(song_names)
-        playlist_id,playlist_url = spotify.create_playlist(playlist_name)
+        playlist_id,playlist_url = spotify.create_playlist(playlist_name,spotify_id)
         success = spotify.append_playlist(uris,playlist_id)
         if success:
             return jsonify({"Spotify URL":playlist_url})
