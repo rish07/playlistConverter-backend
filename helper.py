@@ -1,5 +1,7 @@
+# pylint: disable=import-error
+
 import base64
-import jiosaavn
+import providers.jiosaavn
 from pyDes import *
 
 def format_song(data):

@@ -1,7 +1,9 @@
+# pylint: disable=import-error
+
 import requests
-import endpoints
+import providers.endpoints as endpoints
 import json
-import secrets
+import providers.secrets as secrets
 
 
 def get_spotify_user():
@@ -9,7 +11,7 @@ def get_spotify_user():
     if response.status_code==200:
         return response.json()
     else:
-        return False
+        return 0
 
 def get_song_uris(song_list):
     song_uris = []

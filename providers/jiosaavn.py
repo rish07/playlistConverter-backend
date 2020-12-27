@@ -1,5 +1,7 @@
+# pylint: disable=import-error
+
 import requests
-import endpoints
+import providers.endpoints as endpoints
 import helper
 import json
 from traceback import print_exc
@@ -7,7 +9,7 @@ from traceback import print_exc
 
 def get_playlist(listId):
     try:
-        response = requests.get(endpoints.playlist_details_base_url+listId)
+        response = requests.get(endpoints.jio_playlist_details+listId)
         if response.status_code == 200:
             songs_json = response.text.encode().decode('unicode-escape')
             songs_json = json.loads(songs_json)
