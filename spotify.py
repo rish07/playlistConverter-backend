@@ -7,7 +7,7 @@ import secrets
 def get_spotify_user():
     response = requests.get(endpoints.spotify_user_details,headers={'Authorization': secrets.BEARER_TOKEN})
     if response.status_code==200:
-        return response.json()['id']
+        return response.json()
     else:
         return False
 

@@ -15,13 +15,13 @@ CORS(app)
 def home():
     return jsonify({"status":"The API is healthy"})
 
-@app.route('/test')
+@app.route('/getuser')
 def test():
-    spotify_id=spotify.get_spotify_user()
-    if spotify_id:
-        return spotify_id
+    spotify_user=spotify.get_spotify_user()
+    if spotify_user:
+        return spotify_user
     else:
-        return {"status":spotify_id}
+        return {"status":spotify_user}
 
 @app.route('/playlist/')
 def playlist():
@@ -35,7 +35,7 @@ def playlist():
         song_names = []
         for song in songs:
             song_names.append(song['song'])
-        spotify_id=spotify.get_spotify_user()
+        spotify_id=spotify.get_spotify_user()['id']
         uris = spotify.get_song_uris(song_names)
         playlist_id,playlist_url = spotify.create_playlist(playlist_name,spotify_id)
         success = spotify.append_playlist(uris,playlist_id)
