@@ -1,21 +1,20 @@
-from flask import Flask, request, redirect, jsonify, json
-import time
+from typing import Optional
+from fastapi import FastAPI
 import jiosaavn
 import os
 from traceback import print_exc
-from flask_cors import CORS
 import spotify
 import secrets
 
-app = Flask(__name__)
-CORS(app)
+app = FastAPI()
 
 
-@app.route('/')
+
+@app.get('/')
 def home():
-    return jsonify({"status":"The API is healthy"})
+    return {"status":"The API is healthy"}
 
-@app.route('/getuser')
+@app.get('/getuser')
 def test():
     spotify_user=spotify.get_spotify_user()
     if spotify_user:
@@ -23,11 +22,11 @@ def test():
     else:
         return {"status":spotify_user}
 
-@app.route('/playlist/')
-def playlist():
-    query = request.args.get('query')
-    if(request.args.get('bearer')):
-        secrets.BEARER_TOKEN = request.args.get('bearer')
+@app.get('/playlist/')
+async def playlist(query: str,bearer:Optional[str]=None):
+    query = query
+    if(bearer):
+        secrets.BEARER_TOKEN = bearer
     if query:
         id = jiosaavn.get_playlist_id(query)
         playlist_name = jiosaavn.get_playlist(id)['listname']
@@ -40,17 +39,15 @@ def playlist():
         playlist_id,playlist_url = spotify.create_playlist(playlist_name,spotify_id)
         success = spotify.append_playlist(uris,playlist_id)
         if success:
-            return jsonify({"Spotify URL":playlist_url})
+            return {"Spotify URL":playlist_url}
         else:
-            return jsonify({'status':"Error"})
+            return {'status':"Error"}
     else:
         error = {
             "status": False,
             "error":'Query is required to search playlists!'
         }
-        return jsonify(error)
+        return {"Error":error}
 
 
-if __name__ == '__main__':
-    app.debug = True
-    app.run(host='0.0.0.0', port=4000, use_reloader=True, threaded=True)
+
