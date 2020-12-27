@@ -22,9 +22,8 @@ def getUser():
         return {"status":spotify_user}
 
 @app.get('/playlist/')
-async def playlist(query: str,converter:int,bearer:Optional[str]=None):
-    if(bearer):
-        secrets.BEARER_TOKEN = bearer
+async def playlist(query: str,converter:int,bearer:str):
+    secrets.BEARER_TOKEN = bearer
     if query:
         response = ""
         if converter == 0: #JioSaavn to Spotify

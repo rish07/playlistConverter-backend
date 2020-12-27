@@ -10,6 +10,7 @@ from traceback import print_exc
 def get_playlist(listId):
     try:
         response = requests.get(endpoints.jio_playlist_details+listId)
+        print(response.status_code)
         if response.status_code == 200:
             songs_json = response.text.encode().decode('unicode-escape')
             songs_json = json.loads(songs_json)
