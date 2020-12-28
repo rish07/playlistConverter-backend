@@ -4,7 +4,7 @@ import os
 from traceback import print_exc
 from converters.jio_spotify.jio_to_spotify import convert_jio_to_spotify
 import providers.secrets as secrets
-from providers.spotify import get_spotify_user
+from providers.spotify import get_spotify_user,get_playlist_details
 app = FastAPI()
 
 
@@ -37,6 +37,7 @@ async def playlist(query: str,converter:int,bearer:str):
             "error":'Query is required to search playlists!'
         }
         return {"Error":error}
+
 
 
 

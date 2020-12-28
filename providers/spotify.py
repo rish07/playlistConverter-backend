@@ -4,7 +4,7 @@ import requests
 import providers.endpoints as endpoints
 import json
 import providers.secrets as secrets
-
+import helper
 
 def get_spotify_user():
     response = requests.get(endpoints.spotify_user_details,headers={'Authorization': secrets.BEARER_TOKEN})
@@ -27,7 +27,6 @@ def get_song_uris(song_list):
         
 
 def append_playlist(song_uris,playlist_id):
-    print(str(playlist_id)+"here")
     response = requests.post(endpoints.spotify_playlist_append+str(playlist_id)+"/tracks",headers={'Authorization': secrets.BEARER_TOKEN},json={
             "uris":song_uris
         })
@@ -38,7 +37,6 @@ def append_playlist(song_uris,playlist_id):
         return False
         
 def create_playlist(playlist_name,user_id):
-    print('working')
     response = requests.post(endpoints.spotify_create_playlist+str(user_id)+"/playlists",headers={'Authorization': secrets.BEARER_TOKEN},json={
             "name":playlist_name
         })
@@ -47,4 +45,16 @@ def create_playlist(playlist_name,user_id):
         return response.json()['id'],response.json()['external_urls']['spotify']
     else:
         return Exception
-       
+    
+def get_playlist_details(playlist_url,token):
+    songs = []
+    id = helper.get_spotify_playlist_id(playlist_url)
+    response = requests.get(endpoints.spotify_playlist_detail+id,headers={'Authorization': token})
+    
+    all_songs=response.json()['tracks']['items']
+    for song in all_songs:
+        if "(" in song['track']['name']:
+            songs.append(song['track']['name'].split("(")[0])
+        else:
+            songs.append(song['track']['name'])
+    return songs

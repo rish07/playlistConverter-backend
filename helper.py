@@ -48,3 +48,11 @@ def decrypt_url(url):
     dec_url = des_cipher.decrypt(enc_url, padmode=PAD_PKCS5).decode('utf-8')
     dec_url = dec_url.replace("_96.mp4", "_320.mp4")
     return dec_url
+
+def get_spotify_playlist_id(url):
+    id = url.split("/")[-1]
+    if "?" in id:
+        id = id.split("?")[0]
+        return id
+    else:
+        return id

@@ -17,7 +17,7 @@ def convert_jio_to_spotify(url):
             playlist_id,playlist_url = create_playlist(playlist_name,spotify_id)
             success = append_playlist(uris,playlist_id)
             if success:
-                return {"Spotify URL":playlist_url}
+                return {"url":playlist_url}
             else:
                 return {'Error':"Error in generating spotify playlist"}
         else:
