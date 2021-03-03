@@ -1,4 +1,4 @@
-fastapi==0.38.1
+fastapi==0.51.0
 gunicorn
 requests
 pyDes
